@@ -10,6 +10,8 @@ IF(APPLE)
     LINK_DIRECTORIES(/usr/local/lib)
 ENDIF()
 
+find_package(Eigen3 REQUIRED)
+
 ###########################################################################
 # Find GTSAM
 find_package(GTSAM REQUIRED)
@@ -20,7 +22,7 @@ find_package(GTSAM_UNSTABLE QUIET)
 
 ###########################################################################
 # Find Boost
-find_package(Boost REQUIRED COMPONENTS filesystem regex timer date_time program_options)
+find_package(Boost REQUIRED COMPONENTS filesystem regex timer date_time program_options serialization system thread)
 if(NOT TARGET Boost::boost)
   add_library(Boost::boost INTERFACE IMPORTED)
   set_target_properties(Boost::boost PROPERTIES
@@ -45,6 +47,7 @@ add_subdirectory(include/KimeraRPGO/utils)
 add_subdirectory(src/utils)
 
 target_include_directories(KimeraRPGO PUBLIC
+  ${Eigen_INCLUDE_DIRS}
   ${GTSAM_INCLUDE_DIR}
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
   # INSTALL
@@ -53,6 +56,7 @@ target_include_directories(KimeraRPGO PUBLIC
 
 target_link_libraries(KimeraRPGO
   PUBLIC
+    ${Eigen_LIBRARIES}
     Boost::boost
     gtsam
     gtsam_unstable
